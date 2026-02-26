@@ -1,0 +1,364 @@
+<!--{% load static %}-->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Portfolio</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Saira+Extra+Condensed:wght@400;700&family=Muli&display=swap" rel="stylesheet">
+
+    <!-- FontAwesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+
+    <!--<link rel="stylesheet" href="{% static 'css/style.css' %}">-->
+    <link rel="stylesheet" href="css/style.css">
+    
+    
+</head>
+<body>
+    
+<!-- ================= SIDEBAR ================= -->
+
+<div class="sidebar">
+  <!--  <img src="{% static 'img/image.png' %}" class="profile-img"> -->
+    <img src="img/image.png" class="profile-img">
+
+    <nav>
+        <a href="#about">ABOUT</a>
+        <a href="#education">EDUCATION</a>
+        <a href="#skills">SKILLS</a>
+        <a href="#projects">PROJECTS</a>
+        <a href="#interests-goals">INTERESTS & GOALS</a>
+        
+    </nav>
+</div>
+
+<!-- ================= MAIN CONTENT ================= -->
+
+<div class="main-content">
+
+    <!-- ABOUT -->
+    <section id="about" class="resume-section">
+        <h1 class="main-name">
+            <span class="first-name">MD</span>
+            <span class="last-name">MONSUR</span>
+        </h1>
+
+        <h2 class="subheading">
+            Dhaka, Bangladesh · 01309557153 ·
+            <span class="email">mmatalha0990@email.com</span>
+        </h2>
+
+        <p class="lead">
+            I am a passionate and dedicated developer focused on building modern and responsive websites.
+            I enjoy turning ideas into real-world digital solutions and continuously improving my skills.
+        </p>
+
+     <div class="social-icons">
+  <!-- LinkedIn -->
+  <a href="https://www.linkedin.com/in/md-monsur-ahmed-216946231/" 
+     target="_blank" 
+     data-tooltip="LinkedIn">
+    <i class="fab fa-linkedin-in"></i>
+  </a>
+
+  <!-- GitHub -->
+  <a href="https://github.com/talhamma" 
+     target="_blank" 
+     data-tooltip="GitHub">
+    <i class="fab fa-github"></i>
+  </a>
+
+  <!-- Facebook -->
+  <a href="https://www.facebook.com/mma.talha.9" 
+     target="_blank" 
+     data-tooltip="Facebook">
+    <i class="fab fa-facebook-f"></i>
+  </a>
+
+  <!-- WhatsApp -->
+  <a href="https://wa.me/8801309557153" 
+     target="_blank" 
+     data-tooltip="WhatsApp">
+    <i class="fab fa-whatsapp"></i>
+  </a>
+
+  <!-- Gmail -->
+  <a href="mailto:mmatalha0990@gmail.com" 
+     data-tooltip="Gmail">
+    <i class="fas fa-envelope"></i>
+  </a>
+</div>
+    </section>
+
+    <hr>
+
+    <!-- EDUCATION -->
+    <section id="education" class="resume-section">
+        <h2>Education</h2>
+        <p>
+            I am pursuing my academic journey with a strong focus on technology and software development.
+            Through my studies, I have developed analytical thinking and problem-solving skills.
+        </p>
+
+        <!-- EDUCATION -->
+
+  <div class="education-item">
+    <h3>Bachelor of Science in Computer Science & Engineering (BSc)</h3>
+    <span class="education-duration">2023 – Present</span>
+    <p class="education-institute">
+│    University of Asia Pacific, Dhaka
+    </p>
+  </div>
+
+  <div class="education-item">
+    <h3>Higher Secondary Certificate (HSC)</h3>
+    <span class="education-duration">2019 – 2021</span>
+    <p class="education-institute">
+│    Ta'mirul Millat Kamil Madrasha, Tongi    </p>
+  </div>
+
+  <div class="education-item">
+    <h3>Secondary School Certificate (SSC)</h3>
+    <span class="education-duration">2017 – 2019</span>
+    <p class="education-institute">
+│    Ta'mirul Millat Kamil Madrasha, Tongi    </p>
+  </div>
+
+</section>
+    
+
+    <hr>
+
+    <!-- SKILLS -->
+   <!-- SKILLS -->
+<section id="skills" class="resume-section">
+
+  <h2>Skills</h2>
+  <p>
+    As a Computer Science and Engineering student at the University of Asia Pacific, 
+    I have developed strong skills in programming and analytical problem-solving.
+    I am proficient in C, C++, Java, Python, and JavaScript, and have practical experience 
+    in web development using HTML, CSS, and JavaScript. 
+    I possess a solid understanding of Object-Oriented Programming and Data Structures & Algorithms.
+    I have also worked with Oracle SQL and development environments such as VS Code and Eclipse. 
+    I am a motivated learner, a reliable team player, and passionate about continuous technical growth.
+  </p>
+
+ <!-- SKILLS -->
+
+<div class="skill-accordion">
+  <div class="skill-accordion-header" data-target="frontend">
+    <span>FRONTEND SKILLS</span>
+    <span class="toggle-icon" id="frontend-icon">+</span>
+  </div>
+
+  <div class="skill-accordion-content" id="frontend">
+
+    <div class="skill">
+      <div class="skill-header">
+        <span>HTML</span>
+        <span class="skill-percent">0%</span>
+      </div>
+      <div class="skill-bar">
+        <div class="skill-fill" data-width="90"></div>
+      </div>
+    </div>
+
+    <div class="skill">
+      <div class="skill-header">
+        <span>CSS</span>
+        <span class="skill-percent">0%</span>
+      </div>
+      <div class="skill-bar">
+        <div class="skill-fill" data-width="85"></div>
+      </div>
+    </div>
+
+    <div class="skill">
+      <div class="skill-header">
+        <span>JavaScript</span>
+        <span class="skill-percent">0%</span>
+      </div>
+      <div class="skill-bar">
+        <div class="skill-fill" data-width="75"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Backend Accordion -->
+<div class="skill-accordion">
+  <div class="skill-accordion-header" data-target="backend">
+    <span>BACKEND SKILLS</span>
+    <span class="toggle-icon" id="backend-icon">+</span>
+  </div>
+
+  <div class="skill-accordion-content" id="backend">
+
+    <div class="skill">
+      <div class="skill-header">
+        <span>C</span>
+        <span class="skill-percent">0%</span>
+      </div>
+      <div class="skill-bar">
+        <div class="skill-fill" data-width="80"></div>
+      </div>
+    </div>
+
+    <div class="skill">
+      <div class="skill-header">
+        <span>C++</span>
+        <span class="skill-percent">0%</span>
+      </div>
+      <div class="skill-bar">
+        <div class="skill-fill" data-width="75"></div>
+      </div>
+    </div>
+
+    <div class="skill">
+      <div class="skill-header">
+        <span>Java</span>
+        <span class="skill-percent">0%</span>
+      </div>
+      <div class="skill-bar">
+        <div class="skill-fill" data-width="75"></div>
+      </div>
+    </div>
+
+    <div class="skill">
+      <div class="skill-header">
+        <span>Python</span>
+        <span class="skill-percent">0%</span>
+      </div>
+      <div class="skill-bar">
+        <div class="skill-fill" data-width="70"></div>
+      </div>
+    </div>
+
+    <div class="skill">
+      <div class="skill-header">
+        <span>SQL</span>
+        <span class="skill-percent">0%</span>
+      </div>
+      <div class="skill-bar">
+        <div class="skill-fill" data-width="65"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+    <hr>
+
+    <hr>
+
+    <!-- PROJECTS -->
+<section id="projects" class="resume-section">
+
+  <h2>Projects</h2>
+
+  <!-- Project 1 -->
+  <div class="project-item">
+    <h3>Library Management System (Java OOP)</h3>
+
+    <span class="project-tech">
+      Technologies: Java (OOP Concepts)
+    </span>
+
+    <p class="project-description">
+      Developed a console-based Library Management System using Object-Oriented Programming
+      principles in Java to manage library operations through a structured and modular approach.
+    </p>
+
+    <ul class="project-features">
+      <li>Implemented OOP concepts such as classes, objects, inheritance, and encapsulation</li>
+      <li>Book management: add, update, search, and remove books</li>
+      <li>User management for library members</li>
+      <li>Menu-driven system for user-friendly interaction</li>
+    </ul>
+
+    <div class="project-challenge">
+      <strong>Challenges & Overcome:</strong>
+      <p>
+        Faced difficulties in designing proper class relationships and maintaining data flow
+        between different modules. Overcame this by applying OOP principles effectively,
+        refactoring code into reusable classes, and improving logical structuring.
+      </p>
+    </div>
+  </div>
+
+  <!-- Project 2 -->
+  <div class="project-item">
+    <h3>Library Management System (Oracle SQL)</h3>
+
+    <span class="project-tech">
+      Technologies: Oracle SQL, Relational Database Design
+    </span>
+
+    <p class="project-description">
+      Designed and implemented a database-driven Library Management System using Oracle SQL
+      to efficiently store, manage, and retrieve library data with proper normalization.
+    </p>
+
+    <ul class="project-features">
+      <li>Designed relational tables for books, members, and transactions</li>
+      <li>Implemented CRUD operations using SQL queries</li>
+      <li>Applied primary keys, foreign keys, and constraints</li>
+      <li>Ensured data consistency and integrity</li>
+    </ul>
+
+    <div class="project-challenge">
+      <strong>Challenges & Overcome:</strong>
+      <p>
+        Encountered challenges in database normalization and writing complex SQL queries.
+        Resolved these by redesigning table structures, applying normalization rules,
+        and practicing optimized query writing.
+      </p>
+    </div>
+  </div>
+
+</section>
+
+    <hr>
+
+
+   <!-- INTERESTS & GOALS -->
+<section id="interests-goals" class="resume-section">
+
+  <h2>Interests & Career Goals</h2>
+
+  <div class="interest-goal-item">
+    <h3>Professional Interests</h3>
+    <p>
+      I have a strong interest in software development and problem-solving, particularly in
+      building efficient and scalable applications. I enjoy working with Object-Oriented
+      Programming, database-driven systems, and exploring backend logic that powers real-world
+      applications. Additionally, I am interested in web technologies and continuously learning
+      modern tools and frameworks to enhance my development skills.
+    </p>
+  </div>
+
+  <div class="interest-goal-item">
+    <h3>Career Goals</h3>
+    <p>
+      My career goal is to become a skilled software engineer where I can apply my programming
+      knowledge, analytical thinking, and problem-solving abilities to develop impactful software
+      solutions. I aim to continuously improve my technical expertise, gain industry experience,
+      and contribute effectively to team-based projects while growing as a professional in the
+      field of computer science.
+    </p>
+  </div>
+
+</section>
+
+    <hr>
+
+    
+
+</div>
+<!--<script src="{% static 'js/script.js' %}"></script>-->
+<script src="js/script.js"></script>
+</body>
+</html>
