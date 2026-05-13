@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}{{ event.event_name }}{% endblock %}
+{% block page_title %}Event Details{% endblock %}
+{% block content %}
+<div class="max-w-2xl">
+  <div class="glass-card overflow-hidden mb-4">
+    {% if event.banner %}<img src="{{ event.banner.url }}" class="w-full h-64 object-cover">
+    {% else %}<div class="w-full h-48 bg-gradient-to-br from-purple-900/60 to-indigo-900/60 flex items-center justify-center text-7xl text-purple-800/40"><i class="fas fa-calendar-star"></i></div>{% endif %}
+    <div class="p-6">
+      <div class="flex items-start justify-between mb-3">
+        <h2 class="text-2xl font-bold text-white">{{ event.event_name }}</h2>
+        <span class="badge {% if event.status == 'upcoming' %}badge-yellow{% elif event.status == 'ongoing' %}badge-green{% else %}badge-blue{% endif %}">{{ event.status|title }}</span>
+      </div>
+      <p class="text-slate-300 text-sm mb-4">{{ event.description }}</p>
+      <div class="grid grid-cols-2 gap-3 mb-5">
+        <div class="bg-white/5 rounded-xl p-3"><div class="text-xs text-slate-400">Date</div><div class="text-white text-sm font-semibold">{{ event.date }}</div></div>
+        {% if event.start_time %}<div class="bg-white/5 rounded-xl p-3"><div class="text-xs text-slate-400">Time</div><div class="text-white text-sm font-semibold">{{ event.start_time|time:"H:i" }}{% if event.end_time %} – {{ event.end_time|time:"H:i" }}{% endif %}</div></div>{% endif %}
+        {% if event.room %}<div class="bg-white/5 rounded-xl p-3"><div class="text-xs text-slate-400">Venue</div><div class="text-white text-sm font-semibold">Room {{ event.room.room_number }}</div></div>{% endif %}
+        <div class="bg-white/5 rounded-xl p-3"><div class="text-xs text-slate-400">Registered</div><div class="text-white text-sm font-semibold">{{ event.participants.count }} / {{ event.max_participants }}</div></div>
+      </div>
+      {% if event.status == 'upcoming' %}
+      <form method="post">
+        {% csrf_token %}
+        {% if is_registered %}
+          <button type="submit" name="action" value="unregister" class="btn-secondary">
+            <i class="fas fa-minus mr-2"></i>Unregister
+          </button>
+          <span class="text-emerald-400 text-sm ml-3"><i class="fas fa-check-circle mr-1"></i>You're registered!</span>
+        {% else %}
+          <button type="submit" name="action" value="register" class="btn-primary">
+            <i class="fas fa-plus mr-2"></i>Register for Event
+          </button>
+        {% endif %}
+      </form>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

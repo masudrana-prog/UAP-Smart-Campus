@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block title %}Events{% endblock %}
+{% block page_title %}Events{% endblock %}
+{% block content %}
+{% if upcoming %}
+<h2 class="font-bold text-white mb-3 flex items-center gap-2"><i class="fas fa-star text-yellow-400"></i>Upcoming Events</h2>
+<div class="grid grid-cols-3 gap-4 mb-6">
+{% for e in upcoming %}
+<a href="{% url 'event_detail' e.pk %}" class="glass-card overflow-hidden block">
+  {% if e.banner %}<img src="{{ e.banner.url }}" class="w-full h-36 object-cover">
+  {% else %}<div class="w-full h-36 bg-gradient-to-br from-purple-900/50 to-indigo-900/50 flex items-center justify-center text-5xl text-purple-700/50"><i class="fas fa-calendar-star"></i></div>{% endif %}
+  <div class="p-4">
+    <div class="font-bold text-white mb-1">{{ e.event_name }}</div>
+    <div class="text-xs text-slate-400 mb-2"><i class="fas fa-calendar mr-1"></i>{{ e.date }}{% if e.start_time %} · {{ e.start_time|time:"H:i" }}{% endif %}</div>
+    <div class="flex items-center justify-between">
+      <span class="badge badge-green text-xs">{{ e.participants.count }} registered</span>
+      <span class="text-xs text-purple-400">Register →</span>
+    </div>
+  </div>
+</a>
+{% endfor %}
+</div>
+{% endif %}
+
+{% if ongoing %}
+<h2 class="font-bold text-white mb-3 flex items-center gap-2"><i class="fas fa-circle text-emerald-400 text-xs animate-pulse"></i>Ongoing</h2>
+<div class="grid grid-cols-3 gap-4 mb-6">
+{% for e in ongoing %}
+<a href="{% url 'event_detail' e.pk %}" class="glass-card p-4 block border border-emerald-500/20">
+  <div class="font-bold text-white mb-1">{{ e.event_name }}</div>
+  <div class="text-xs text-slate-400">{{ e.date }}</div>
+  <span class="badge badge-green mt-2">Ongoing</span>
+</a>
+{% endfor %}
+</div>
+{% endif %}
+
+{% if past %}
+<h2 class="font-bold text-white mb-3 flex items-center gap-2"><i class="fas fa-history text-slate-400"></i>Past Events</h2>
+<div class="space-y-2">
+{% for e in past %}
+<div class="glass-card p-4 flex items-center justify-between opacity-60">
+  <div><div class="font-semibold text-white">{{ e.event_name }}</div><div class="text-xs text-slate-400">{{ e.date }}</div></div>
+  <span class="badge badge-blue">Completed</span>
+</div>
+{% endfor %}
+{% endif %}
+</div>
+
+{% if not upcoming and not ongoing and not past %}
+<div class="text-center py-12 text-slate-500"><i class="fas fa-calendar text-4xl mb-3"></i><p>No events scheduled.</p></div>
+{% endif %}
+{% endblock %}

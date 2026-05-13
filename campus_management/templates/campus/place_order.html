@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block title %}Place Order{% endblock %}
+{% block page_title %}Place Order — {{ canteen.name }}{% endblock %}
+{% block content %}
+<div class="max-w-2xl">
+  <div class="glass-card p-6">
+    <form method="post" id="orderForm">
+      {% csrf_token %}
+      <div class="space-y-3 mb-5">
+        {% for item in items %}
+        <div class="flex items-center justify-between p-4 bg-white/[0.04] rounded-xl border border-white/8">
+          <label class="flex items-center gap-3 cursor-pointer flex-1">
+            <input type="checkbox" name="items" value="{{ item.pk }}" class="w-4 h-4 rounded accent-emerald-400" onchange="updateQty(this)">
+            <div>
+              <div class="font-semibold text-white text-sm">{{ item.name }}</div>
+              {% if item.description %}<div class="text-xs text-slate-400">{{ item.description }}</div>{% endif %}
+            </div>
+          </label>
+          <div class="flex items-center gap-3">
+            <span class="text-emerald-400 font-bold text-sm">৳{{ item.price }}</span>
+            <input type="number" name="qty_{{ item.pk }}" value="1" min="1" max="10" class="form-input w-16 text-center text-sm py-1 qty-input" id="qty_{{ item.pk }}" disabled>
+          </div>
+        </div>
+        {% empty %}<p class="text-slate-500">No items available.</p>{% endfor %}
+      </div>
+      <div class="mb-5">
+        <label class="form-label">Special Instructions</label>
+        <textarea name="instructions" class="form-input" rows="2" placeholder="Any allergies or special requests?"></textarea>
+      </div>
+      <div class="glass p-4 rounded-xl mb-5 flex items-center justify-between">
+        <span class="text-slate-300">Total:</span>
+        <span class="text-2xl font-bold text-emerald-400" id="totalPrice">৳0</span>
+      </div>
+      <div class="flex gap-3">
+        <button type="submit" class="btn-primary"><i class="fas fa-check mr-2"></i>Place Order</button>
+        <a href="{% url 'canteen_menu' %}" class="btn-secondary">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+<script>
+const prices = { {% for item in items %}'{{ item.pk }}': {{ item.price }}, {% endfor %} };
+function updateQty(cb) {
+  const qtyInput = document.getElementById('qty_' + cb.value);
+  if (qtyInput) qtyInput.disabled = !cb.checked;
+  updateTotal();
+}
+function updateTotal() {
+  let total = 0;
+  document.querySelectorAll('input[name="items"]:checked').forEach(cb => {
+    const qty = parseInt(document.getElementById('qty_' + cb.value)?.value || 1);
+    total += (prices[cb.value] || 0) * qty;
+  });
+  document.getElementById('totalPrice').textContent = '৳' + total.toFixed(2);
+}
+document.querySelectorAll('.qty-input').forEach(i => i.addEventListener('change', updateTotal));
+</script>
+{% endblock %}
