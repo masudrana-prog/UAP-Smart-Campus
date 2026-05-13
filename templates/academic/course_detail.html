@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}{{ course.course_name }}{% endblock %}
+{% block page_title %}{{ course.course_name }}{% endblock %}
+{% block content %}
+<div class="grid grid-cols-3 gap-5">
+  <div class="col-span-2 space-y-5">
+    <div class="glass-card p-5">
+      <div class="flex items-center gap-4 mb-4">
+        <div class="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center text-white font-bold text-lg">{{ course.course_id|slice:":2" }}</div>
+        <div>
+          <h2 class="font-bold text-xl text-white">{{ course.course_name }}</h2>
+          <div class="text-sm text-slate-400">{{ course.course_id }} · {{ course.credit_hours }} Credit Hours</div>
+        </div>
+      </div>
+      {% if course.description %}<p class="text-slate-300 text-sm">{{ course.description }}</p>{% endif %}
+    </div>
+    <div class="glass-card p-5">
+      <h3 class="font-bold text-white mb-4 flex items-center gap-2"><i class="fas fa-tasks text-yellow-400"></i> Assignments
+        {% if user.is_teacher and course.teacher == user %}<a href="{% url 'upload_assignment' %}" class="ml-auto btn-primary text-xs py-1 px-3">+ Upload</a>{% endif %}
+      </h3>
+      {% for a in assignments %}
+      <div class="flex items-center justify-between p-3 bg-white/[0.03] rounded-lg mb-2 border border-white/5">
+        <div><div class="font-semibold text-sm text-white">{{ a.title }}</div><div class="text-xs text-slate-400">Due {{ a.due_date|date:"M d, Y H:i" }}</div></div>
+        <div class="flex gap-2">
+          {% if user.is_student %}
+            {% if a.id in submitted_ids %}<span class="badge badge-green">Submitted</span>
+            {% else %}<a href="{% url 'submit_assignment' a.pk %}" class="btn-primary text-xs py-1 px-3">Submit</a>{% endif %}
+          {% endif %}
+          <a href="{% url 'assignment_detail' a.pk %}" class="btn-secondary text-xs py-1 px-3">View</a>
+        </div>
+      </div>
+      {% empty %}<p class="text-slate-500 text-sm">No assignments yet.</p>{% endfor %}
+    </div>
+    <div class="glass-card p-5">
+      <h3 class="font-bold text-white mb-4 flex items-center gap-2"><i class="fas fa-file-alt text-purple-400"></i> Previous Questions</h3>
+      {% for q in questions %}
+      <div class="flex items-center justify-between p-3 bg-white/[0.03] rounded-lg mb-2 border border-white/5">
+        <div><div class="font-semibold text-sm text-white">{{ q.question_name }}</div><div class="text-xs text-slate-400">{{ q.year }}</div></div>
+        <a href="{{ q.file.url }}" class="btn-secondary text-xs py-1 px-3" download><i class="fas fa-download mr-1"></i>Download</a>
+      </div>
+      {% empty %}<p class="text-slate-500 text-sm">No previous questions.</p>{% endfor %}
+    </div>
+  </div>
+  <div class="space-y-4">
+    <div class="glass-card p-5">
+      <h3 class="font-bold text-white mb-3">Course Info</h3>
+      <div class="space-y-3 text-sm">
+        <div><span class="text-slate-400">Department:</span><div class="text-white">{{ course.department.name }}</div></div>
+        <div><span class="text-slate-400">Teacher:</span><div class="text-white">{{ course.teacher.get_full_name|default:"TBA" }}</div></div>
+        <div><span class="text-slate-400">Students Enrolled:</span><div class="text-white">{{ course.students.count }}</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
