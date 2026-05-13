@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Canteen{% endblock %}
+{% block page_title %}Canteen Menu{% endblock %}
+{% block content %}
+{% for canteen in canteens %}
+<div class="glass-card p-5 mb-5">
+  <div class="flex items-center justify-between mb-4">
+    <div>
+      <h2 class="text-xl font-bold text-white flex items-center gap-2"><i class="fas fa-utensils text-orange-400"></i>{{ canteen.name }}</h2>
+      {% if canteen.location %}<p class="text-xs text-slate-400 mt-0.5">{{ canteen.location }}</p>{% endif %}
+    </div>
+    <a href="{% url 'place_order' canteen.pk %}" class="btn-primary text-sm"><i class="fas fa-shopping-cart mr-2"></i>Order Now</a>
+  </div>
+  <div class="grid grid-cols-4 gap-3">
+    {% for item in canteen.menu_items.all %}
+    {% if item.is_available %}
+    <div class="bg-white/[0.04] rounded-xl p-3 border border-white/8">
+      {% if item.image %}<img src="{{ item.image.url }}" class="w-full h-28 object-cover rounded-lg mb-2">
+      {% else %}<div class="w-full h-28 bg-orange-900/20 rounded-lg mb-2 flex items-center justify-center text-4xl text-orange-800/50"><i class="fas fa-hamburger"></i></div>{% endif %}
+      <div class="font-semibold text-white text-sm">{{ item.name }}</div>
+      {% if item.description %}<div class="text-xs text-slate-400 mt-0.5 truncate">{{ item.description }}</div>{% endif %}
+      <div class="text-emerald-400 font-bold text-sm mt-1">৳{{ item.price }}</div>
+    </div>
+    {% endif %}
+    {% empty %}<p class="col-span-4 text-slate-500 text-sm">No items available.</p>{% endfor %}
+  </div>
+</div>
+{% empty %}
+<div class="text-center py-12 text-slate-500"><i class="fas fa-utensils text-4xl mb-3"></i><p>No canteens available.</p></div>
+{% endfor %}
+{% endblock %}
