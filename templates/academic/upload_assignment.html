@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}Upload Assignment{% endblock %}
+{% block page_title %}Upload Assignment{% endblock %}
+{% block content %}
+<div class="max-w-lg">
+  <div class="glass-card p-6">
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="mb-4"><label class="form-label">Title</label><input type="text" name="title" class="form-input" placeholder="Assignment title" required></div>
+      <div class="mb-4"><label class="form-label">Course</label>
+        <select name="course" class="form-input">
+          {% for c in form.course.field.queryset %}<option value="{{ c.pk }}">{{ c.course_name }} ({{ c.course_id }})</option>{% endfor %}
+        </select>
+      </div>
+      <div class="mb-4"><label class="form-label">Description</label><textarea name="description" class="form-input" rows="4" placeholder="Describe the assignment..."></textarea></div>
+      <div class="grid grid-cols-2 gap-4 mb-4">
+        <div><label class="form-label">Due Date</label><input type="datetime-local" name="due_date" class="form-input" required></div>
+        <div><label class="form-label">Max Marks</label><input type="number" name="max_marks" class="form-input" value="100" min="1"></div>
+      </div>
+      <div class="mb-5"><label class="form-label">Attachment (optional)</label><input type="file" name="file" class="form-input"></div>
+      <div class="flex gap-3">
+        <button type="submit" class="btn-primary"><i class="fas fa-upload mr-2"></i>Upload</button>
+        <a href="{% url 'assignment_list' %}" class="btn-secondary">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

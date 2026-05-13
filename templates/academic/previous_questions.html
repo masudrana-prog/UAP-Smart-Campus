@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Previous Questions{% endblock %}
+{% block page_title %}Previous Questions{% endblock %}
+{% block content %}
+<div class="flex gap-4 mb-5">
+  <form method="get" class="flex gap-3">
+    <select name="course" class="form-input w-64" onchange="this.form.submit()">
+      <option value="">All Courses</option>
+      {% for c in courses %}<option value="{{ c.pk }}" {% if course_filter == c.pk|stringformat:"s" %}selected{% endif %}>{{ c.course_id }} – {{ c.course_name }}</option>{% endfor %}
+    </select>
+  </form>
+</div>
+<div class="grid grid-cols-3 gap-4">
+{% for q in questions %}
+<div class="glass-card p-5">
+  <div class="w-10 h-10 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center text-xl mb-3"><i class="fas fa-file-pdf"></i></div>
+  <h3 class="font-bold text-white text-sm mb-1">{{ q.question_name }}</h3>
+  <div class="text-xs text-slate-400 mb-3">{{ q.course.course_id }} · {{ q.year }}</div>
+  <a href="{{ q.file.url }}" class="btn-secondary text-xs inline-flex items-center gap-1 w-full justify-center" download><i class="fas fa-download"></i> Download</a>
+</div>
+{% empty %}
+<div class="col-span-3 text-center py-12 text-slate-500"><i class="fas fa-file-alt text-4xl mb-3"></i><p>No previous questions found.</p></div>
+{% endfor %}
+</div>
+{% endblock %}

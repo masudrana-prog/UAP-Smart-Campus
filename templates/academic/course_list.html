@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}Courses{% endblock %}
+{% block page_title %}Courses{% endblock %}
+{% block content %}
+<div class="grid grid-cols-3 gap-4">
+{% for course in courses %}
+<a href="{% url 'course_detail' course.pk %}" class="glass-card p-5 block">
+  <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center text-white font-bold text-sm mb-3">{{ course.course_id|slice:":2" }}</div>
+  <h3 class="font-bold text-white mb-1">{{ course.course_name }}</h3>
+  <div class="text-xs text-slate-400 mb-3">{{ course.course_id }} · {{ course.credit_hours }} credits</div>
+  <div class="flex items-center justify-between">
+    <span class="text-xs text-slate-500">{{ course.department.name }}</span>
+    <span class="text-xs text-blue-400">{{ course.students.count }} students</span>
+  </div>
+</a>
+{% empty %}
+<div class="col-span-3 text-center py-12 text-slate-500"><i class="fas fa-book-open text-4xl mb-3"></i><p>No courses available.</p></div>
+{% endfor %}
+</div>
+{% endblock %}
