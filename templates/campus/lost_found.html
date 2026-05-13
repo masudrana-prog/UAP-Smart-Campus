@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block title %}Lost & Found{% endblock %}
+{% block page_title %}Lost & Found{% endblock %}
+
+{% block content %}
+<div class="flex justify-between items-center mb-5">
+  <p class="text-slate-400 text-sm">{{ items.count }} item{{ items.count|pluralize }} reported</p>
+  <a href="{% url 'report_lost' %}" class="btn-primary text-sm">
+    <i class="fas fa-plus mr-2"></i>Report Item
+  </a>
+</div>
+
+<div class="grid grid-cols-3 gap-4">
+
+{% for item in items %}
+<div class="glass-card overflow-hidden">
+
+  {% if item.image %}
+    <img src="{{ item.image.url }}" class="w-full h-36 object-cover">
+  {% else %}
+    <div class="w-full h-36 bg-slate-800/50 flex items-center justify-center text-4xl text-slate-700">
+      <i class="fas fa-question-circle"></i>
+    </div>
+  {% endif %}
+
+  <div class="p-4">
+
+    <div class="flex items-start justify-between mb-2">
+      <h3 class="font-bold text-white text-sm">{{ item.item_name }}</h3>
+
+      <span class="badge {% if item.status == 'reported' %}badge-yellow{% else %}badge-green{% endif %} text-xs flex-shrink-0 ml-2">
+        {{ item.status|title }}
+      </span>
+    </div>
+
+    <p class="text-xs text-slate-400 mb-2 leading-relaxed">
+      {{ item.description|truncatechars:80 }}
+    </p>
+
+    {% if item.found_location %}
+    <div class="text-xs text-slate-500 mb-2">
+      <i class="fas fa-map-marker-alt mr-1"></i>{{ item.found_location }}
+    </div>
+    {% endif %}
+
+    <div class="text-xs text-slate-500 mb-3">
+      {{ item.date_reported|date:"M d, Y" }}
+    </div>
+
+    {% if item.status == 'reported' and item.reported_by != user %}
+    <form method="post" action="{% url 'claim_item' item.pk %}">
+      {% csrf_token %}
+
+      <button type="submit"
+              class="btn-primary text-xs w-full py-1.5"
+              onclick="return confirm('Claim this item?')">
+
+        <i class="fas fa-hand-paper mr-1"></i>Claim This
+      </button>
+    </form>
+    {% endif %}
+
+    <!-- DELETE BUTTON -->
+    {% if user.is_superuser %}
+    <a href="{% url 'delete_item' item.pk %}">
+      <button class="bg-red-600 hover:bg-red-700 text-white text-xs w-full py-1.5 rounded mt-2">
+        <i class="fas fa-trash mr-1"></i>Delete
+      </button>
+    </a>
+    {% endif %}
+
+  </div>
+</div>
+
+{% empty %}
+<div class="col-span-3 text-center py-12 text-slate-500">
+  <i class="fas fa-search text-4xl mb-3"></i>
+  <p>No items reported.</p>
+</div>
+{% endfor %}
+
+</div>
+{% endblock %}
