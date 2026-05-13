@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}{{ assignment.title }}{% endblock %}
+{% block page_title %}{{ assignment.title }}{% endblock %}
+{% block content %}
+<div class="grid grid-cols-3 gap-5">
+  <div class="col-span-2 space-y-5">
+    <div class="glass-card p-6">
+      <div class="flex items-start justify-between mb-4">
+        <div>
+          <h2 class="text-xl font-bold text-white mb-1">{{ assignment.title }}</h2>
+          <div class="text-sm text-slate-400">{{ assignment.course.course_name }} ({{ assignment.course.course_id }})</div>
+        </div>
+        {% if assignment.is_overdue %}<span class="badge badge-red">Overdue</span>{% else %}<span class="badge badge-yellow">Active</span>{% endif %}
+      </div>
+      <p class="text-slate-300 text-sm mb-4">{{ assignment.description }}</p>
+      {% if assignment.file %}<a href="{{ assignment.file.url }}" class="btn-secondary text-sm inline-flex items-center gap-2" download><i class="fas fa-download"></i> Download Attachment</a>{% endif %}
+    </div>
+    {% if user.is_student and not submission %}
+    <a href="{% url 'submit_assignment' assignment.pk %}" class="btn-primary inline-flex items-center gap-2"><i class="fas fa-upload"></i>Submit Assignment</a>
+    {% elif user.is_student and submission %}
+    <div class="glass-card p-5">
+      <h3 class="font-bold text-emerald-400 mb-2 flex items-center gap-2"><i class="fas fa-check-circle"></i>Your Submission</h3>
+      <div class="text-sm text-slate-300">Submitted: {{ submission.submitted_at|date:"M d, Y H:i" }}</div>
+      <a href="{{ submission.submitted_file.url }}" class="btn-secondary text-sm mt-3 inline-block" download>View File</a>
+      {% if submission.marks_obtained is not None %}<div class="mt-3 text-emerald-400 font-bold">Marks: {{ submission.marks_obtained }} / {{ assignment.max_marks }}</div>{% endif %}
+      {% if submission.feedback %}<div class="mt-2 text-sm text-slate-300 bg-white/5 p-3 rounded-lg">{{ submission.feedback }}</div>{% endif %}
+    </div>
+    {% endif %}
+    {% if all_submissions %}
+    <div class="glass-card p-5">
+      <h3 class="font-bold text-white mb-4">Submissions ({{ all_submissions.count }})</h3>
+      {% for sub in all_submissions %}
+      <div class="flex items-center justify-between p-3 bg-white/[0.03] rounded-lg mb-2 border border-white/5">
+        <div class="text-sm text-white">{{ sub.student.get_full_name }}</div>
+        <div class="flex items-center gap-3">
+          <span class="text-xs text-slate-400">{{ sub.submitted_at|date:"M d" }}</span>
+          <a href="{{ sub.submitted_file.url }}" class="text-blue-400 text-xs" download>Download</a>
+          {% if sub.marks_obtained %}<span class="badge badge-green">{{ sub.marks_obtained }}/{{ assignment.max_marks }}</span>{% else %}<span class="badge badge-yellow">Ungraded</span>{% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+  <div class="glass-card p-5 h-fit">
+    <h3 class="font-bold text-white mb-4">Details</h3>
+    <div class="space-y-3 text-sm">
+      <div><span class="text-slate-400">Max Marks</span><div class="text-white font-bold text-lg">{{ assignment.max_marks }}</div></div>
+      <div><span class="text-slate-400">Due Date</span><div class="text-white">{{ assignment.due_date|date:"M d, Y H:i" }}</div></div>
+      <div><span class="text-slate-400">Posted By</span><div class="text-white">{{ assignment.uploaded_by.get_full_name }}</div></div>
+      <div><span class="text-slate-400">Posted On</span><div class="text-white">{{ assignment.upload_date|date:"M d, Y" }}</div></div>
+    </div>
+  </div>
+</div>
+{% endblock %}
