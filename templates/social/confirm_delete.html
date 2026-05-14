@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}Confirm Delete{% endblock %}
+{% block page_title %}Confirm Delete{% endblock %}
+
+{% block content %}
+<div class="max-w-md">
+  <div class="glass-card p-7 text-center">
+
+    <div class="w-16 h-16 rounded-full bg-red-500/15 flex items-center justify-center text-red-400 text-3xl mx-auto mb-4">
+      <i class="fas fa-trash"></i>
+    </div>
+
+    <h2 class="text-xl font-bold text-white mb-2">
+      Delete this {{ type }}?
+    </h2>
+
+    <p class="text-slate-400 mb-1 font-medium text-white">
+      {% if type == 'post' %}
+        {{ object.title|truncatechars:60 }}
+      {% else %}
+        {{ object.comment_text|truncatechars:60 }}
+      {% endif %}
+    </p>
+
+    <p class="text-slate-500 text-sm mb-6">
+      This action cannot be undone.
+    </p>
+
+    <div class="flex gap-3 justify-center">
+      <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn-danger">
+          <i class="fas fa-trash mr-2"></i>
+          Yes, Delete
+        </button>
+      </form>
+
+      <a href="{% url 'post_list' %}" class="btn-secondary">
+        Cancel
+      </a>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
