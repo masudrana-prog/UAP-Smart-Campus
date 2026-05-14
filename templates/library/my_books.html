@@ -24,13 +24,13 @@
           </div>
         </div>
       </div>
-      <a href="{% url 'return_book' issue.pk %}" class="btn-secondary text-sm"><i class="fas fa-undo mr-1"></i>Return</a>
+      <a href="{% url 'return_book' issue.pk %}" class="btn-secondary text-sm"><i class="fas fa-undo mr-1"></i> Return </a>
     </div>
-    {% empty %}<p class="text-slate-500 text-sm">No books currently borrowed. <a href="{% url 'book_list' %}" class="text-emerald-400 hover:underline">Browse library →</a></p>{% endfor %}
+    {% empty %}<p class="text-slate-500 text-sm"> No books currently borrowed. <a href="{% url 'book_list' %}" class="text-emerald-400 hover:underline">Browse library →</a></p>{% endfor %}
   </div>
   {% if history %}
   <div class="glass-card p-5">
-    <h3 class="font-bold text-white mb-4 flex items-center gap-2"><i class="fas fa-history text-slate-400"></i> Return History</h3>
+    <h3 class="font-bold text-white mb-4 flex items-center gap-2"><i class="fas fa-history text-slate-400"></i>Return History</h3>
     {% for issue in history %}
     <div class="flex items-center justify-between p-3 bg-white/[0.03] rounded-lg mb-2 border border-white/5">
       <div class="text-sm text-white">{{ issue.book.title }}</div>
