@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block title %}News Feed{% endblock %}
+{% block page_title %}News Feed{% endblock %}
+{% block content %}
+<div class="flex gap-5">
+  <div class="flex-1 space-y-4">
+    {% for post in posts %}
+    <div class="glass-card p-5">
+      <div class="flex items-start justify-between mb-3">
+        <div class="flex items-center gap-3">
+          {% if post.posted_by.profile_picture %}
+            <img src="{{ post.posted_by.profile_picture.url }}" class="w-10 h-10 rounded-full object-cover">
+          {% else %}
+            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold text-sm">{{ post.posted_by.first_name|first|upper }}</div>
+          {% endif %}
+          <div>
+            <div class="font-semibold text-white text-sm">{{ post.posted_by.get_full_name }}</div>
+            <div class="text-xs text-slate-400">{{ post.date|timesince }} ago</div>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="badge {% if post.post_type == 'notice' %}badge-yellow{% elif post.post_type == 'news' %}badge-blue{% elif post.post_type == 'question' %}badge-pink{% else %}badge-green{% endif %}">{{ post.post_type|title }}</span>
+          <!-- Trash icon: ONLY post owner or admin can see/click -->
+          {% if post.posted_by == user or user.is_admin_role %}
+          <a href="{% url 'delete_post' post.pk %}" class="text-red-400/50 hover:text-red-400 transition-colors" title="Delete post">
+            <i class="fas fa-trash text-sm"></i>
+          </a>
+          {% endif %}
+        </div>
+      </div>
+      <h3 class="font-bold text-white mb-2">{{ post.title }}</h3>
+      <p class="text-slate-300 text-sm mb-3 leading-relaxed">{{ post.content|truncatechars:250 }}</p>
+      {% if post.image %}<img src="{{ post.image.url }}" class="w-full h-48 object-cover rounded-xl mb-3">{% endif %}
+      <div class="flex items-center gap-4 pt-3 border-t border-white/10">
+        <button onclick="toggleLike({{ post.pk }}, this)"
+          class="flex items-center gap-1.5 text-sm text-slate-400 hover:text-pink-400 transition-colors">
+          <i class="fas fa-heart text-sm"></i>
+          <span class="like-count">{{ post.like_count }}</span>
+        </button>
+        <a href="{% url 'post_detail' post.pk %}" class="flex items-center gap-1.5 text-sm text-slate-400 hover:text-blue-400 transition-colors">
+          <i class="fas fa-comment text-sm"></i> {{ post.comment_count }}
+        </a>
+        <a href="{% url 'post_detail' post.pk %}" class="ml-auto text-xs text-slate-500 hover:text-white">Read more →</a>
+      </div>
+    </div>
+    {% empty %}
+    <div class="text-center py-16 text-slate-500"><i class="fas fa-newspaper text-5xl mb-4 text-slate-700"></i><p>No posts yet. Be the first!</p></div>
+    {% endfor %}
+  </div>
+  <div class="w-64 flex-shrink-0 space-y-4">
+    <div class="glass-card p-4">
+      <a href="{% url 'create_post' %}" class="btn-primary w-full text-center py-2.5 block"><i class="fas fa-pen mr-2"></i>New Post</a>
+    </div>
+    <div class="glass-card p-4">
+      <h4 class="font-semibold text-white text-sm mb-3">Filter by type</h4>
+      <div class="space-y-1.5">
+        <a href="{% url 'post_list' %}" class="block text-xs text-slate-400 hover:text-white py-1">All Posts</a>
+        <a href="?type=notice" class="block text-xs text-yellow-400 hover:text-yellow-300 py-1"><i class="fas fa-bell mr-1"></i> Notices</a>
+        <a href="?type=news" class="block text-xs text-blue-400 hover:text-blue-300 py-1"><i class="fas fa-newspaper mr-1"></i> News</a>
+        <a href="?type=question" class="block text-xs text-pink-400 hover:text-pink-300 py-1"><i class="fas fa-question mr-1"></i> Questions</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block extra_scripts %}
+<script>
+function toggleLike(pk, btn) {
+  fetch(`/social/${pk}/like/`, {method:'POST', headers:{'X-CSRFToken':'{{ csrf_token }}'}})
+    .then(r => r.json()).then(data => {
+      btn.querySelector('.like-count').textContent = data.count;
+      btn.classList.toggle('text-pink-400', data.liked);
+      btn.classList.toggle('text-slate-400', !data.liked);
+    });
+}
+</script>
+{% endblock %}
