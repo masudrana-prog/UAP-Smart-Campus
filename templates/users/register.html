@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% block title %}Register — CampusHub{% endblock %}
+{% block auth_content %}
+<div class="min-h-screen flex items-center justify-center p-4 py-10">
+  <div class="w-full max-w-2xl">
+    <div class="text-center mb-8">
+      <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-slate-900 font-bold text-3xl mx-auto mb-4 shadow-xl shadow-emerald-500/20">C</div>
+      <h1 class="text-3xl font-bold text-white">Create Account</h1>
+      <p class="text-slate-400 mt-1 text-sm">Join CampusHub today</p>
+    </div>
+    <div class="glass-card p-8">
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="grid grid-cols-2 gap-4 mb-4">
+          <div><label class="form-label">First Name</label><input type="text" name="first_name" class="form-input" placeholder="John" required></div>
+          <div><label class="form-label">Last Name</label><input type="text" name="last_name" class="form-input" placeholder="Doe" required></div>
+        </div>
+        <div class="grid grid-cols-2 gap-4 mb-4">
+          <div><label class="form-label">Username</label><input type="text" name="username" class="form-input" placeholder="johndoe" required></div>
+          <div><label class="form-label">Email</label><input type="email" name="email" class="form-input" placeholder="john@example.com" required></div>
+        </div>
+        <div class="grid grid-cols-2 gap-4 mb-4">
+          <div><label class="form-label">Phone</label><input type="text" name="phone" class="form-input" placeholder="+880..."></div>
+          <div>
+            <label class="form-label">Role</label>
+            <select name="role" id="roleSelect" class="form-input" onchange="toggleFields(this.value)">
+              <option value="student">Student</option>
+              <option value="teacher">Teacher</option>
+              <option value="alumni">Alumni</option>
+            </select>
+          </div>
+        </div>
+        <div class="mb-4"><label class="form-label">Department</label>
+          <select name="department" class="form-input">
+            <option value="">Select Department</option>
+            <option value="CSE">Computer Science & Engineering</option>
+            <option value="EEE">Electrical & Electronic Engineering</option>
+            <option value="BBA">Business Administration</option>
+            <option value="English">English</option>
+            <option value="Law">Law</option>
+            <option value="Civil">Civil Engineering</option>
+            <option value="Pharmacy">Pharmacy</option>
+          </select>
+        </div>
+        <!-- Student fields -->
+        <div id="studentFields">
+          <div class="grid grid-cols-3 gap-4 mb-4">
+            <div><label class="form-label">Student ID</label><input type="text" name="student_id" class="form-input" placeholder="STU001"></div>
+            <div><label class="form-label">Year</label><input type="number" name="year" class="form-input" value="1" min="1" max="4"></div>
+            <div><label class="form-label">Semester</label><input type="number" name="semester" class="form-input" value="1" min="1" max="8"></div>
+          </div>
+        </div>
+        <!-- Teacher fields -->
+        <div id="teacherFields" class="hidden">
+          <div class="grid grid-cols-2 gap-4 mb-4">
+            <div><label class="form-label">Teacher ID</label><input type="text" name="teacher_id" class="form-input" placeholder="TCH001"></div>
+            <div><label class="form-label">Designation</label><input type="text" name="designation" class="form-input" placeholder="Lecturer"></div>
+          </div>
+        </div>
+        <!-- Alumni fields -->
+        <div id="alumniFields" class="hidden">
+          <div class="grid grid-cols-3 gap-4 mb-4">
+            <div><label class="form-label">Alumni ID</label><input type="text" name="alumni_id" class="form-input" placeholder="ALM001"></div>
+            <div><label class="form-label">Graduation Year</label><input type="number" name="graduation_year" class="form-input" placeholder="2022"></div>
+            <div><label class="form-label">Profession</label><input type="text" name="profession" class="form-input" placeholder="Software Engineer"></div>
+          </div>
+        </div>
+        <div class="mb-4"><label class="form-label">Profile Picture</label><input type="file" name="profile_picture" class="form-input" accept="image/*"></div>
+        <div class="grid grid-cols-2 gap-4 mb-6">
+          <div><label class="form-label">Password</label><input type="password" name="password" class="form-input" placeholder="••••••••" required></div>
+          <div><label class="form-label">Confirm Password</label><input type="password" name="password2" class="form-input" placeholder="••••••••" required></div>
+        </div>
+        {% if form.errors %}<div class="alert alert-error mb-4">Please fix the errors above.</div>{% endif %}
+        <button type="submit" class="btn-primary w-full text-center py-3 text-base"><i class="fas fa-user-plus mr-2"></i>Create Account</button>
+      </form>
+      <p class="text-center text-slate-400 text-sm mt-6">Already have an account? <a href="{% url 'login' %}" class="text-emerald-400 hover:text-emerald-300 font-semibold">Sign In</a></p>
+    </div>
+  </div>
+</div>
+<script>
+function toggleFields(role) {
+  document.getElementById('studentFields').classList.toggle('hidden', role !== 'student');
+  document.getElementById('teacherFields').classList.toggle('hidden', role !== 'teacher');
+  document.getElementById('alumniFields').classList.toggle('hidden', role !== 'alumni');
+}
+</script>
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block title %}Faculty{% endblock %}
+{% block page_title %}Faculty Members{% endblock %}
+{% block content %}
+<div class="flex items-center justify-between mb-5">
+  <!-- Department filter -->
+  <form method="get" class="flex gap-3 items-center">
+    <select name="dept" class="form-input w-64" onchange="this.form.submit()">
+      <option value="">All Departments</option>
+      {% for dept in departments %}
+        <option value="{{ dept }}" {% if department_filter == dept %}selected{% endif %}>{{ dept }}</option>
+      {% endfor %}
+    </select>
+    {% if department_filter %}
+      <a href="{% url 'faculty_list' %}" class="btn-secondary text-sm px-3 py-2">Clear</a>
+    {% endif %}
+  </form>
+  {% if user.is_admin_role %}
+    <a href="{% url 'add_faculty' %}" class="btn-primary text-sm">
+      <i class="fas fa-plus mr-2"></i>Add Faculty Member
+    </a>
+  {% endif %}
+</div>
+
+<div class="grid grid-cols-3 gap-5">
+{% for member in faculty %}
+<div class="glass-card overflow-hidden group">
+  <!-- Photo -->
+  <div class="relative h-52 overflow-hidden">
+    {% if member.photo %}
+      <img src="{{ member.photo.url }}" class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-300">
+    {% else %}
+      <div class="w-full h-full bg-gradient-to-br from-indigo-900/60 to-purple-900/60 flex items-center justify-center">
+        <div class="w-24 h-24 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white text-4xl font-bold shadow-xl">
+          {{ member.name|first|upper }}
+        </div>
+      </div>
+    {% endif %}
+    <!-- Rank badge overlay -->
+    <div class="absolute top-3 right-3">
+      <span class="badge badge-blue text-xs backdrop-blur-sm">{{ member.get_rank_display }}</span>
+    </div>
+  </div>
+  <!-- Info -->
+  <div class="p-5">
+    <h3 class="font-bold text-white text-base mb-0.5">{{ member.name }}</h3>
+    <div class="text-sm text-emerald-400 font-medium mb-1">{{ member.designation }}</div>
+    <div class="text-xs text-slate-400 mb-3 flex items-center gap-1">
+      <i class="fas fa-building"></i> {{ member.department }}
+    </div>
+    {% if member.research_interest %}
+      <div class="text-xs text-slate-500 mb-3 line-clamp-2">
+        <i class="fas fa-flask mr-1 text-purple-400"></i>{{ member.research_interest }}
+      </div>
+    {% endif %}
+    <div class="flex gap-2 mt-3">
+      <a href="{% url 'faculty_detail' member.pk %}" class="btn-secondary text-xs py-1.5 flex-1 text-center">View Profile</a>
+      {% if user.is_admin_role %}
+        <a href="{% url 'edit_faculty' member.pk %}" class="btn-secondary text-xs py-1.5 px-3">
+          <i class="fas fa-edit"></i>
+        </a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% empty %}
+<div class="col-span-3 text-center py-16 text-slate-500">
+  <i class="fas fa-user-tie text-5xl mb-4 text-slate-700"></i>
+  <p class="mb-3">No faculty members found.</p>
+  {% if user.is_admin_role %}
+    <a href="{% url 'add_faculty' %}" class="btn-primary text-sm">Add the first faculty member</a>
+  {% endif %}
+</div>
+{% endfor %}
+</div>
+{% endblock %}

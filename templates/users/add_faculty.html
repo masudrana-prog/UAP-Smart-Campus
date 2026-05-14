@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block title %}Add Faculty{% endblock %}
+{% block page_title %}Add Faculty Member{% endblock %}
+{% block content %}
+<div class="max-w-2xl">
+  <div class="glass-card p-7">
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="grid grid-cols-2 gap-4 mb-4">
+        <div class="col-span-2"><label class="form-label">Full Name *</label><input type="text" name="name" class="form-input" placeholder="Dr. John Smith" required></div>
+        <div>
+          <label class="form-label">Department *</label>
+          <select name="department" class="form-input" required>
+            <option value="">Select Department</option>
+            <option value="CSE">Computer Science &amp; Engineering</option>
+            <option value="EEE">Electrical &amp; Electronic Engineering</option>
+            <option value="BBA">Business Administration</option>
+            <option value="English">English</option>
+            <option value="Law">Law</option>
+            <option value="Civil">Civil Engineering</option>
+            <option value="Pharmacy">Pharmacy</option>
+          </select>
+        </div>
+        <div><label class="form-label">Designation *</label><input type="text" name="designation" class="form-input" placeholder="Associate Professor" required></div>
+        <div>
+          <label class="form-label">Rank</label>
+          <select name="rank" class="form-input">
+            <option value="lecturer">Lecturer</option>
+            <option value="senior_lecturer">Senior Lecturer</option>
+            <option value="assistant_professor">Assistant Professor</option>
+            <option value="associate_professor">Associate Professor</option>
+            <option value="professor">Professor</option>
+            <option value="adjunct">Adjunct Faculty</option>
+          </select>
+        </div>
+        <div><label class="form-label">Joined Year</label><input type="number" name="joined_year" class="form-input" placeholder="2018" min="1970" max="2030"></div>
+      </div>
+      <div class="grid grid-cols-2 gap-4 mb-4">
+        <div><label class="form-label">Email</label><input type="email" name="email" class="form-input" placeholder="faculty@campus.edu"></div>
+        <div><label class="form-label">Phone</label><input type="text" name="phone" class="form-input" placeholder="+880..."></div>
+        <div><label class="form-label">Office Room</label><input type="text" name="office_room" class="form-input" placeholder="Room 301, Block A"></div>
+        <div><label class="form-label">Display Order</label><input type="number" name="order" class="form-input" value="0" min="0"></div>
+      </div>
+      <div class="mb-4"><label class="form-label">Research Interests</label><input type="text" name="research_interest" class="form-input" placeholder="Machine Learning, Computer Vision..."></div>
+      <div class="mb-4"><label class="form-label">Biography</label><textarea name="bio" class="form-input" rows="4" placeholder="Brief biography..."></textarea></div>
+      <div class="mb-6"><label class="form-label">Photo</label><input type="file" name="photo" class="form-input" accept="image/*"></div>
+      <div class="flex gap-3">
+        <button type="submit" class="btn-primary"><i class="fas fa-user-plus mr-2"></i>Add Faculty Member</button>
+        <a href="{% url 'faculty_list' %}" class="btn-secondary">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

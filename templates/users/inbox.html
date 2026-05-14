@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block title %}Inbox{% endblock %}
+{% block page_title %}Messages{% endblock %}
+{% block content %}
+<div class="max-w-2xl">
+  {% if user.is_student %}
+  <div class="glass-card p-4 mb-4 flex items-center gap-3 border border-indigo-500/20 bg-indigo-500/5">
+    <i class="fas fa-info-circle text-indigo-400"></i>
+    <span class="text-sm text-slate-300">As a student you can message alumni for mentorship and career advice.</span>
+    <a href="{% url 'alumni_list' %}" class="btn-primary text-xs py-1.5 ml-auto">Find Alumni →</a>
+  </div>
+  {% endif %}
+
+  <div class="glass-card overflow-hidden">
+    <div class="p-5 border-b border-white/10 flex items-center justify-between">
+      <h2 class="font-bold text-white flex items-center gap-2">
+        <i class="fas fa-inbox text-emerald-400"></i> Conversations
+      </h2>
+      <span class="badge badge-blue">{{ conversations|length }}</span>
+    </div>
+
+    {% if conversations %}
+      <div class="divide-y divide-white/5">
+      {% for convo in conversations %}
+        <a href="{% url 'conversation' convo.partner.pk %}" class="flex items-center gap-4 p-4 hover:bg-white/[0.03] transition-colors block">
+          <!-- Avatar -->
+          {% if convo.partner.profile_picture %}
+            <img src="{{ convo.partner.profile_picture.url }}" class="w-12 h-12 rounded-full object-cover flex-shrink-0">
+          {% else %}
+            <div class="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold flex-shrink-0">
+              {{ convo.partner.first_name|first|upper }}
+            </div>
+          {% endif %}
+          <!-- Info -->
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between mb-0.5">
+              <span class="font-semibold text-white text-sm">{{ convo.partner.get_full_name }}</span>
+              <span class="text-xs text-slate-500">{{ convo.last_msg.sent_at|timesince }} ago</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-xs text-slate-400 truncate">
+                {% if convo.last_msg.sender == user %}
+                  <span class="text-slate-500">You:</span>
+                {% endif %}
+                {{ convo.last_msg.content|truncatechars:50 }}
+              </span>
+              {% if convo.unread > 0 %}
+                <span class="ml-2 flex-shrink-0 w-5 h-5 bg-emerald-500 rounded-full text-xs text-slate-900 font-bold flex items-center justify-center">{{ convo.unread }}</span>
+              {% endif %}
+            </div>
+          </div>
+          <span class="badge {% if convo.partner.role == 'alumni' %}badge-pink{% elif convo.partner.role == 'student' %}badge-blue{% else %}badge-yellow{% endif %} flex-shrink-0">
+            {{ convo.partner.role|title }}
+          </span>
+        </a>
+      {% endfor %}
+      </div>
+    {% else %}
+      <div class="text-center py-16 text-slate-500">
+        <i class="fas fa-comment-slash text-5xl mb-4 text-slate-700"></i>
+        <p class="mb-2">No conversations yet.</p>
+        {% if user.is_student %}
+          <a href="{% url 'alumni_list' %}" class="text-emerald-400 text-sm hover:underline">Find an alumni to connect with →</a>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

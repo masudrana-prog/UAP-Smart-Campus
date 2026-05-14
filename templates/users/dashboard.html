@@ -1,0 +1,213 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard — CampusHub{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+<!-- STUDENT DASHBOARD -->
+{% if user.is_student %}
+<div class="grid grid-cols-4 gap-4 mb-6">
+  <div class="stat-card flex items-center gap-4">
+    <div class="w-12 h-12 rounded-xl bg-blue-500/15 flex items-center justify-center text-blue-400 text-xl"><i class="fas fa-book-open"></i></div>
+    <div><div class="text-2xl font-bold text-white">{{ enrolled_courses.count }}</div><div class="text-xs text-slate-400">Enrolled Courses</div></div>
+  </div>
+  <div class="stat-card flex items-center gap-4">
+    <div class="w-12 h-12 rounded-xl bg-yellow-500/15 flex items-center justify-center text-yellow-400 text-xl"><i class="fas fa-tasks"></i></div>
+    <div><div class="text-2xl font-bold text-white">{{ assignments.count }}</div><div class="text-xs text-slate-400">Pending Tasks</div></div>
+  </div>
+  <div class="stat-card flex items-center gap-4">
+    <div class="w-12 h-12 rounded-xl bg-emerald-500/15 flex items-center justify-center text-emerald-400 text-xl"><i class="fas fa-book"></i></div>
+    <div><div class="text-2xl font-bold text-white">{{ book_issues.count }}</div><div class="text-xs text-slate-400">Books Issued</div></div>
+  </div>
+  <div class="stat-card flex items-center gap-4">
+    <div class="w-12 h-12 rounded-xl bg-purple-500/15 flex items-center justify-center text-purple-400 text-xl"><i class="fas fa-calendar"></i></div>
+    <div><div class="text-2xl font-bold text-white">{{ today_routine.count }}</div><div class="text-xs text-slate-400">Classes Today</div></div>
+  </div>
+</div>
+
+<div class="grid grid-cols-3 gap-5 mb-5">
+  <!-- Deadline Tracker -->
+  <div class="col-span-2 glass-card p-5">
+    <h3 class="font-bold text-white mb-4 flex items-center gap-2"><i class="fas fa-clock text-yellow-400"></i> Deadline Tracker</h3>
+    {% if assignments %}
+      <div class="space-y-3">
+      {% for a in assignments %}
+        <div class="flex items-center justify-between p-3 bg-white/[0.03] rounded-lg border border-white/5">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-lg {% if a.is_overdue %}bg-red-500/20 text-red-400{% else %}bg-yellow-500/15 text-yellow-400{% endif %} flex items-center justify-center text-sm">
+              <i class="fas fa-tasks"></i>
+            </div>
+            <div>
+              <div class="font-semibold text-sm text-white">{{ a.title }}</div>
+              <div class="text-xs text-slate-400">{{ a.course.course_id }}</div>
+            </div>
+          </div>
+          <div class="text-right">
+            <div class="text-xs font-semibold {% if a.is_overdue %}text-red-400{% else %}text-yellow-300{% endif %}">{{ a.due_date|date:"M d, Y" }}</div>
+            {% if a.id in submitted_ids %}
+              <span class="badge badge-green text-xs">Submitted</span>
+            {% else %}
+              <a href="{% url 'submit_assignment' a.pk %}" class="text-xs text-emerald-400 hover:underline">Submit →</a>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+      </div>
+    {% else %}
+      <div class="text-center py-8 text-slate-500"><i class="fas fa-check-circle text-3xl mb-2 text-emerald-500/40"></i><p class="text-sm">No pending assignments!</p></div>
+    {% endif %}
+  </div>
+  <!-- Today's Routine -->
+  <div class="glass-card p-5">
+    <h3 class="font-bold text-white mb-4 flex items-center gap-2"><i class="fas fa-calendar-day text-blue-400"></i> Today's Classes</h3>
+    {% if today_routine %}
+      <div class="space-y-2">
+      {% for r in today_routine %}
+        <div class="p-3 bg-blue-500/8 rounded-lg border border-blue-500/15">
+          <div class="font-semibold text-sm text-white">{{ r.course.course_name }}</div>
+          <div class="text-xs text-slate-400 mt-1">{{ r.start_time|time:"H:i" }} – {{ r.end_time|time:"H:i" }}</div>
+          {% if r.room_number %}<div class="text-xs text-blue-400">Room {{ r.room_number }}</div>{% endif %}
+        </div>
+      {% endfor %}
+      </div>
+    {% else %}
+      <div class="text-center py-6 text-slate-500"><i class="fas fa-couch text-2xl mb-2"></i><p class="text-xs">No classes today</p></div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Book Return Deadlines -->
+{% if book_issues %}
+<div class="glass-card p-5 mb-5">
+  <h3 class="font-bold text-white mb-4 flex items-center gap-2"><i class="fas fa-bookmark text-emerald-400"></i> Book Return Deadlines</h3>
+  <div class="grid grid-cols-3 gap-3">
+  {% for issue in book_issues %}
+    <div class="p-3 bg-white/[0.03] rounded-lg border {% if issue.is_overdue %}border-red-500/30 bg-red-500/5{% else %}border-white/5{% endif %}">
+      <div class="font-semibold text-sm text-white truncate">{{ issue.book.title }}</div>
+      <div class="text-xs text-slate-400 mt-1">Due: <span class="{% if issue.is_overdue %}text-red-400 font-semibold{% elif issue.days_remaining <= 3 %}text-yellow-400 font-semibold{% else %}text-emerald-400{% endif %}">{{ issue.return_deadline }}</span></div>
+      {% if issue.is_overdue %}<div class="text-xs text-red-400 mt-1">⚠ Overdue!</div>{% else %}<div class="text-xs text-slate-500">{{ issue.days_remaining }} days left</div>{% endif %}
+    </div>
+  {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+<!-- TEACHER DASHBOARD -->
+{% elif user.is_teacher %}
+<div class="grid grid-cols-4 gap-4 mb-6">
+  <div class="stat-card flex items-center gap-4">
+    <div class="w-12 h-12 rounded-xl bg-emerald-500/15 flex items-center justify-center text-emerald-400 text-xl"><i class="fas fa-chalkboard-teacher"></i></div>
+    <div><div class="text-2xl font-bold text-white">{{ my_courses.count }}</div><div class="text-xs text-slate-400">My Courses</div></div>
+  </div>
+  <div class="stat-card flex items-center gap-4">
+    <div class="w-12 h-12 rounded-xl bg-yellow-500/15 flex items-center justify-center text-yellow-400 text-xl"><i class="fas fa-upload"></i></div>
+    <div><div class="text-2xl font-bold text-white">{{ my_assignments.count }}</div><div class="text-xs text-slate-400">Assignments Posted</div></div>
+  </div>
+  <div class="stat-card flex items-center gap-4">
+    <div class="w-12 h-12 rounded-xl bg-red-500/15 flex items-center justify-center text-red-400 text-xl"><i class="fas fa-inbox"></i></div>
+    <div><div class="text-2xl font-bold text-white">{{ pending_submissions }}</div><div class="text-xs text-slate-400">To Review</div></div>
+  </div>
+</div>
+<div class="grid grid-cols-2 gap-5 mb-5">
+  <div class="glass-card p-5">
+    <h3 class="font-bold text-white mb-4 flex items-center gap-2"><i class="fas fa-book-open text-emerald-400"></i> My Courses</h3>
+    {% for c in my_courses %}
+    <div class="flex items-center justify-between p-3 bg-white/[0.03] rounded-lg mb-2 border border-white/5">
+      <div><div class="font-semibold text-sm text-white">{{ c.course_name }}</div><div class="text-xs text-slate-400">{{ c.course_id }} · {{ c.students.count }} students</div></div>
+      <a href="{% url 'course_detail' c.pk %}" class="text-emerald-400 text-xs hover:underline">View →</a>
+    </div>
+    {% empty %}<p class="text-slate-500 text-sm">No courses assigned.</p>{% endfor %}
+  </div>
+  <div class="glass-card p-5">
+    <h3 class="font-bold text-white mb-4 flex items-center gap-2"><i class="fas fa-tasks text-yellow-400"></i> Recent Assignments
+      <a href="{% url 'upload_assignment' %}" class="ml-auto btn-primary text-xs py-1 px-3">+ Upload</a>
+    </h3>
+    {% for a in my_assignments %}
+    <div class="flex items-center justify-between p-3 bg-white/[0.03] rounded-lg mb-2 border border-white/5">
+      <div><div class="font-semibold text-sm text-white">{{ a.title }}</div><div class="text-xs text-slate-400">{{ a.course.course_id }} · Due {{ a.due_date|date:"M d" }}</div></div>
+      <a href="{% url 'assignment_detail' a.pk %}" class="text-blue-400 text-xs hover:underline">View →</a>
+    </div>
+    {% empty %}<p class="text-slate-500 text-sm">No assignments yet.</p>{% endfor %}
+  </div>
+</div>
+
+<!-- ALUMNI DASHBOARD -->
+{% elif user.is_alumni %}
+<div class="grid grid-cols-3 gap-4 mb-6">
+  <div class="stat-card flex items-center gap-4">
+    <div class="w-12 h-12 rounded-xl bg-pink-500/15 flex items-center justify-center text-pink-400 text-xl"><i class="fas fa-graduation-cap"></i></div>
+    <div><div class="text-2xl font-bold text-white">{{ profile.graduation_year|default:"—" }}</div><div class="text-xs text-slate-400">Graduation Year</div></div>
+  </div>
+  <div class="stat-card flex items-center gap-4">
+    <div class="w-12 h-12 rounded-xl bg-emerald-500/15 flex items-center justify-center text-emerald-400 text-xl"><i class="fas fa-briefcase"></i></div>
+    <div><div class="text-sm font-bold text-white truncate">{{ profile.profession|default:"Not set" }}</div><div class="text-xs text-slate-400">Profession</div></div>
+  </div>
+  <div class="stat-card flex items-center gap-4">
+    <div class="w-12 h-12 rounded-xl bg-purple-500/15 flex items-center justify-center text-purple-400 text-xl"><i class="fas fa-calendar-star"></i></div>
+    <div><div class="text-2xl font-bold text-white">{{ upcoming_events.count }}</div><div class="text-xs text-slate-400">Upcoming Events</div></div>
+  </div>
+</div>
+<div class="glass-card p-5 mb-5">
+  <h3 class="font-bold text-white mb-3 flex items-center gap-2"><i class="fas fa-calendar-star text-purple-400"></i> Upcoming Events</h3>
+  {% for e in upcoming_events %}
+  <div class="flex items-center justify-between p-3 bg-white/[0.03] rounded-lg mb-2 border border-white/5">
+    <div><div class="font-semibold text-sm text-white">{{ e.event_name }}</div><div class="text-xs text-slate-400">{{ e.date }}</div></div>
+    <a href="{% url 'event_detail' e.pk %}" class="text-purple-400 text-xs">Register →</a>
+  </div>
+  {% empty %}<p class="text-slate-500 text-sm">No upcoming events.</p>{% endfor %}
+</div>
+
+<!-- ADMIN DASHBOARD -->
+{% elif user.is_admin_role %}
+<div class="grid grid-cols-4 gap-4 mb-6">
+  <div class="stat-card flex items-center gap-4">
+    <div class="w-12 h-12 rounded-xl bg-blue-500/15 flex items-center justify-center text-blue-400 text-xl"><i class="fas fa-user-graduate"></i></div>
+    <div><div class="text-2xl font-bold text-white">{{ total_students }}</div><div class="text-xs text-slate-400">Students</div></div>
+  </div>
+  <div class="stat-card flex items-center gap-4">
+    <div class="w-12 h-12 rounded-xl bg-emerald-500/15 flex items-center justify-center text-emerald-400 text-xl"><i class="fas fa-chalkboard-teacher"></i></div>
+    <div><div class="text-2xl font-bold text-white">{{ total_teachers }}</div><div class="text-xs text-slate-400">Teachers</div></div>
+  </div>
+  <div class="stat-card flex items-center gap-4">
+    <div class="w-12 h-12 rounded-xl bg-pink-500/15 flex items-center justify-center text-pink-400 text-xl"><i class="fas fa-user-tie"></i></div>
+    <div><div class="text-2xl font-bold text-white">{{ total_alumni }}</div><div class="text-xs text-slate-400">Alumni</div></div>
+  </div>
+  <div class="stat-card flex items-center gap-4">
+    <div class="w-12 h-12 rounded-xl bg-yellow-500/15 flex items-center justify-center text-yellow-400 text-xl"><i class="fas fa-shopping-cart"></i></div>
+    <div><div class="text-2xl font-bold text-white">{{ pending_orders }}</div><div class="text-xs text-slate-400">Pending Orders</div></div>
+  </div>
+</div>
+<div class="glass-card p-5 mb-5">
+  <h3 class="font-bold text-white mb-3 flex items-center gap-2"><i class="fas fa-cog text-yellow-400"></i> Quick Admin Actions</h3>
+  <div class="flex flex-wrap gap-3">
+    <a href="/admin/" class="btn-primary text-sm"><i class="fas fa-tools mr-2"></i>Admin Panel</a>
+    <a href="{% url 'post_list' %}" class="btn-secondary text-sm"><i class="fas fa-newspaper mr-2"></i>Manage Posts</a>
+    <a href="{% url 'book_list' %}" class="btn-secondary text-sm"><i class="fas fa-book mr-2"></i>Library</a>
+  </div>
+</div>
+{% endif %}
+
+<!-- Common: Recent Posts & Events -->
+<div class="grid grid-cols-2 gap-5">
+  <div class="glass-card p-5">
+    <h3 class="font-bold text-white mb-4 flex items-center gap-2"><i class="fas fa-newspaper text-indigo-400"></i> Recent Posts</h3>
+    {% for post in recent_posts %}
+    <a href="{% url 'post_detail' post.pk %}" class="block p-3 bg-white/[0.03] rounded-lg mb-2 border border-white/5 hover:border-white/10 transition-colors">
+      <div class="flex items-start justify-between gap-2">
+        <div class="font-semibold text-sm text-white leading-tight">{{ post.title|truncatechars:50 }}</div>
+        <span class="badge {% if post.post_type == 'notice' %}badge-yellow{% elif post.post_type == 'news' %}badge-blue{% else %}badge-green{% endif %} shrink-0">{{ post.post_type }}</span>
+      </div>
+      <div class="text-xs text-slate-400 mt-1">{{ post.posted_by.get_full_name }} · {{ post.date|timesince }} ago</div>
+    </a>
+    {% empty %}<p class="text-slate-500 text-sm">No posts yet.</p>{% endfor %}
+  </div>
+  <div class="glass-card p-5">
+    <h3 class="font-bold text-white mb-4 flex items-center gap-2"><i class="fas fa-calendar-star text-purple-400"></i> Upcoming Events</h3>
+    {% for e in upcoming_events %}
+    <a href="{% url 'event_detail' e.pk %}" class="block p-3 bg-white/[0.03] rounded-lg mb-2 border border-white/5 hover:border-white/10 transition-colors">
+      <div class="font-semibold text-sm text-white">{{ e.event_name }}</div>
+      <div class="text-xs text-slate-400 mt-1"><i class="fas fa-calendar mr-1"></i>{{ e.date }}</div>
+    </a>
+    {% empty %}<p class="text-slate-500 text-sm">No upcoming events.</p>{% endfor %}
+  </div>
+</div>
+{% endblock %}

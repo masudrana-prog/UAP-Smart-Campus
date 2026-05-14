@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block title %}Profile — CampusHub{% endblock %}
+{% block page_title %}My Profile{% endblock %}
+{% block content %}
+<div class="max-w-2xl">
+  <div class="glass-card p-7 mb-5">
+    <div class="flex items-center gap-6 mb-6">
+      {% if user.profile_picture %}
+        <img src="{{ user.profile_picture.url }}" class="w-24 h-24 rounded-2xl object-cover ring-4 ring-emerald-400/20 shadow-xl">
+      {% else %}
+        <div class="w-24 h-24 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold text-4xl shadow-xl">
+          {{ user.first_name|first|upper }}
+        </div>
+      {% endif %}
+      <div>
+        <h2 class="text-2xl font-bold text-white">{{ user.get_full_name|default:user.username }}</h2>
+        <div class="text-slate-400 text-sm">{{ user.email }}</div>
+        <span class="badge {% if user.role == 'student' %}badge-blue{% elif user.role == 'teacher' %}badge-green{% elif user.role == 'alumni' %}badge-pink{% else %}badge-yellow{% endif %} mt-2">{{ user.role|title }}</span>
+      </div>
+      <div class="ml-auto">
+        <a href="{% url 'update_profile' %}" class="btn-secondary text-sm"><i class="fas fa-edit mr-1"></i> Edit</a>
+      </div>
+    </div>
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white/[0.04] rounded-xl p-4"><div class="text-xs text-slate-400 mb-1">Phone</div><div class="text-white text-sm">{{ user.phone|default:"Not set" }}</div></div>
+      <div class="bg-white/[0.04] rounded-xl p-4"><div class="text-xs text-slate-400 mb-1">Username</div><div class="text-white text-sm font-mono">@{{ user.username }}</div></div>
+    </div>
+  </div>
+  {% if profile %}
+  <div class="glass-card p-6">
+    <h3 class="font-bold text-white mb-4"><i class="fas fa-id-card text-emerald-400 mr-2"></i>Profile Details</h3>
+    {% if user.is_student %}
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white/[0.04] rounded-xl p-4"><div class="text-xs text-slate-400 mb-1">Student ID</div><div class="text-white text-sm font-mono">{{ profile.student_id }}</div></div>
+      <div class="bg-white/[0.04] rounded-xl p-4"><div class="text-xs text-slate-400 mb-1">Department</div><div class="text-white text-sm">{{ profile.department }}</div></div>
+      <div class="bg-white/[0.04] rounded-xl p-4"><div class="text-xs text-slate-400 mb-1">Year</div><div class="text-white text-sm">Year {{ profile.year }}</div></div>
+      <div class="bg-white/[0.04] rounded-xl p-4"><div class="text-xs text-slate-400 mb-1">Semester</div><div class="text-white text-sm">Semester {{ profile.semester }}</div></div>
+    </div>
+    {% elif user.is_teacher %}
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white/[0.04] rounded-xl p-4"><div class="text-xs text-slate-400 mb-1">Teacher ID</div><div class="text-white text-sm font-mono">{{ profile.teacher_id }}</div></div>
+      <div class="bg-white/[0.04] rounded-xl p-4"><div class="text-xs text-slate-400 mb-1">Department</div><div class="text-white text-sm">{{ profile.department }}</div></div>
+      <div class="bg-white/[0.04] rounded-xl p-4"><div class="text-xs text-slate-400 mb-1">Designation</div><div class="text-white text-sm">{{ profile.designation }}</div></div>
+    </div>
+    {% elif user.is_alumni %}
+    <div class="grid grid-cols-2 gap-4">
+      <div class="bg-white/[0.04] rounded-xl p-4"><div class="text-xs text-slate-400 mb-1">Alumni ID</div><div class="text-white text-sm font-mono">{{ profile.alumni_id }}</div></div>
+      <div class="bg-white/[0.04] rounded-xl p-4"><div class="text-xs text-slate-400 mb-1">Graduation Year</div><div class="text-white text-sm">{{ profile.graduation_year }}</div></div>
+      <div class="bg-white/[0.04] rounded-xl p-4"><div class="text-xs text-slate-400 mb-1">Profession</div><div class="text-white text-sm">{{ profile.profession|default:"Not set" }}</div></div>
+      <div class="bg-white/[0.04] rounded-xl p-4"><div class="text-xs text-slate-400 mb-1">Company</div><div class="text-white text-sm">{{ profile.company|default:"Not set" }}</div></div>
+    </div>
+    {% endif %}
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

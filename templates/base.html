@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}CampusHub{% endblock %}</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  :root {
+    --glass: rgba(255,255,255,0.07);
+    --glass-border: rgba(255,255,255,0.12);
+    --accent: #6ee7b7;
+    --accent2: #818cf8;
+    --accent3: #f9a8d4;
+  }
+  * { font-family: 'Sora', sans-serif; }
+  body { background: #0f172a; color: #e2e8f0; min-height: 100vh; }
+  .glass {
+    background: var(--glass);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  }
+  .glass-card {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 1rem;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .glass-card:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.1); }
+  .btn-primary {
+    background: linear-gradient(135deg, #10b981, #6ee7b7);
+    color: #0f172a; font-weight: 600;
+    padding: 0.6rem 1.4rem; border-radius: 0.75rem;
+    transition: all 0.2s; box-shadow: 0 4px 14px rgba(110,231,183,0.25);
+    border: none; cursor: pointer; display: inline-block; text-decoration: none;
+  }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(110,231,183,0.4); }
+  .btn-secondary {
+    background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+    color: #e2e8f0; font-weight: 500;
+    padding: 0.6rem 1.4rem; border-radius: 0.75rem;
+    transition: all 0.2s; cursor: pointer; display: inline-block; text-decoration: none;
+  }
+  .btn-secondary:hover { background: rgba(255,255,255,0.15); }
+  .btn-danger {
+    background: linear-gradient(135deg, #ef4444, #f87171);
+    color: white; font-weight: 600;
+    padding: 0.6rem 1.4rem; border-radius: 0.75rem;
+    transition: all 0.2s; cursor: pointer; border: none; display: inline-block; text-decoration: none;
+  }
+  .form-input {
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
+    color: #e2e8f0; padding: 0.65rem 1rem; border-radius: 0.75rem;
+    width: 100%; transition: border-color 0.2s, box-shadow 0.2s;
+    font-size: 0.95rem;
+  }
+  .form-input:focus { outline: none; border-color: #6ee7b7; box-shadow: 0 0 0 3px rgba(110,231,183,0.15); }
+  .form-input::placeholder { color: #64748b; }
+  .form-label { display: block; font-size: 0.85rem; font-weight: 600; color: #94a3b8; margin-bottom: 0.4rem; text-transform: uppercase; letter-spacing: 0.05em; }
+  .badge { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.2rem 0.7rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; }
+  .badge-green { background: rgba(110,231,183,0.15); color: #6ee7b7; border: 1px solid rgba(110,231,183,0.3); }
+  .badge-blue { background: rgba(129,140,248,0.15); color: #818cf8; border: 1px solid rgba(129,140,248,0.3); }
+  .badge-yellow { background: rgba(251,191,36,0.15); color: #fbbf24; border: 1px solid rgba(251,191,36,0.3); }
+  .badge-red { background: rgba(248,113,113,0.15); color: #f87171; border: 1px solid rgba(248,113,113,0.3); }
+  .badge-pink { background: rgba(249,168,212,0.15); color: #f9a8d4; border: 1px solid rgba(249,168,212,0.3); }
+  .sidebar-link { display: flex; align-items: center; gap: 0.75rem; padding: 0.65rem 1rem; border-radius: 0.75rem; color: #94a3b8; font-size: 0.9rem; font-weight: 500; transition: all 0.2s; text-decoration: none; }
+  .sidebar-link:hover, .sidebar-link.active { background: rgba(110,231,183,0.1); color: #6ee7b7; }
+  .page-title { font-size: 1.75rem; font-weight: 700; background: linear-gradient(135deg, #e2e8f0, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .mesh-bg { position: fixed; inset: 0; z-index: -1; background: radial-gradient(ellipse at 20% 50%, rgba(110,231,183,0.05) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(129,140,248,0.05) 0%, transparent 60%), radial-gradient(ellipse at 60% 80%, rgba(249,168,212,0.04) 0%, transparent 60%), #0f172a; }
+  .scrollbar-thin::-webkit-scrollbar { width: 4px; }
+  .scrollbar-thin::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+  .stat-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 1rem; padding: 1.25rem; }
+  select.form-input option { background: #1e293b; }
+  textarea.form-input { resize: vertical; min-height: 100px; }
+  .alert { padding: 0.9rem 1.1rem; border-radius: 0.75rem; font-size: 0.9rem; margin-bottom: 1rem; }
+  .alert-success { background: rgba(110,231,183,0.1); border: 1px solid rgba(110,231,183,0.3); color: #6ee7b7; }
+  .alert-error { background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.3); color: #f87171; }
+  .alert-warning { background: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.3); color: #fbbf24; }
+  .alert-info { background: rgba(129,140,248,0.1); border: 1px solid rgba(129,140,248,0.3); color: #818cf8; }
+</style>
+{% block extra_head %}{% endblock %}
+</head>
+<body>
+<div class="mesh-bg"></div>
+{% if user.is_authenticated %}
+<div class="flex min-h-screen">
+  <!-- Sidebar -->
+  <aside class="w-64 flex-shrink-0 glass border-r border-white/10 flex flex-col fixed h-full z-20 overflow-y-auto scrollbar-thin">
+    <div class="p-5 border-b border-white/10">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-slate-900 font-bold text-lg shadow-lg">C</div>
+        <div>
+          <div class="font-bold text-white text-sm">CampusHub</div>
+          <div class="text-xs text-slate-500">Management System</div>
+        </div>
+      </div>
+    </div>
+    <!-- User info -->
+    <div class="p-4 border-b border-white/10">
+      <div class="flex items-center gap-3">
+        {% if user.profile_picture %}
+          <img src="{{ user.profile_picture.url }}" class="w-10 h-10 rounded-full object-cover ring-2 ring-emerald-400/30">
+        {% else %}
+          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold text-sm">
+            {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
+          </div>
+        {% endif %}
+        <div class="overflow-hidden">
+          <div class="font-semibold text-sm text-white truncate">{{ user.get_full_name|default:user.username }}</div>
+          <span class="badge {% if user.role == 'student' %}badge-blue{% elif user.role == 'teacher' %}badge-green{% elif user.role == 'alumni' %}badge-pink{% else %}badge-yellow{% endif %} text-xs">{{ user.role|title }}</span>
+        </div>
+      </div>
+    </div>
+    <!-- Navigation -->
+    <nav class="p-3 flex-1">
+      <div class="mb-2">
+        <p class="text-xs text-slate-600 uppercase tracking-widest px-2 mb-1 font-semibold">Main</p>
+        <a href="{% url 'dashboard' %}" class="sidebar-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+          <i class="fas fa-th-large w-4"></i> Dashboard
+        </a>
+        <a href="{% url 'post_list' %}" class="sidebar-link {% if 'post' in request.resolver_match.url_name %}active{% endif %}">
+          <i class="fas fa-newspaper w-4"></i> News Feed
+        </a>
+      </div>
+      {% if not user.is_alumni %}
+      <div class="mb-2">
+        <p class="text-xs text-slate-600 uppercase tracking-widest px-2 mb-1 mt-3 font-semibold">Academic</p>
+        <a href="{% url 'course_list' %}" class="sidebar-link">
+          <i class="fas fa-book-open w-4"></i> Courses
+        </a>
+        <a href="{% url 'assignment_list' %}" class="sidebar-link">
+          <i class="fas fa-tasks w-4"></i> Assignments
+        </a>
+        <a href="{% url 'previous_questions' %}" class="sidebar-link">
+          <i class="fas fa-file-alt w-4"></i> Past Questions
+        </a>
+        <a href="{% url 'routine' %}" class="sidebar-link">
+          <i class="fas fa-calendar-alt w-4"></i> Routine
+        </a>
+        <a href="{% url 'book_list' %}" class="sidebar-link">
+          <i class="fas fa-book w-4"></i> Library
+        </a>
+        <a href="{% url 'my_books' %}" class="sidebar-link">
+          <i class="fas fa-bookmark w-4"></i> My Books
+        </a>
+      </div>
+      {% endif %}
+      <div class="mb-2">
+        <p class="text-xs text-slate-600 uppercase tracking-widest px-2 mb-1 mt-3 font-semibold">Campus</p>
+        <a href="{% url 'canteen_menu' %}" class="sidebar-link">
+          <i class="fas fa-utensils w-4"></i> Canteen
+        </a>
+        <a href="{% url 'event_list' %}" class="sidebar-link">
+          <i class="fas fa-calendar-star w-4"></i> Events
+        </a>
+        <a href="{% url 'lost_found' %}" class="sidebar-link">
+          <i class="fas fa-search w-4"></i> Lost & Found
+        </a>
+        {% if user.is_alumni %}
+        <a href="{% url 'alumni_list' %}" class="sidebar-link">
+          <i class="fas fa-users w-4"></i> Alumni Network
+        </a>
+        {% endif %}
+        {% if user.is_student %}
+        <a href="{% url 'alumni_list' %}" class="sidebar-link">
+          <i class="fas fa-user-graduate w-4"></i> Find Alumni
+        </a>
+        {% endif %}
+        <a href="{% url 'faculty_list' %}" class="sidebar-link">
+          <i class="fas fa-chalkboard-teacher w-4"></i> Faculty
+        </a>
+      </div>
+      <div>
+        <p class="text-xs text-slate-600 uppercase tracking-widest px-2 mb-1 mt-3 font-semibold">Account</p>
+        <a href="{% url 'profile' %}" class="sidebar-link">
+          <i class="fas fa-user w-4"></i> Profile
+        </a>
+        <a href="{% url 'inbox' %}" class="sidebar-link relative">
+          <i class="fas fa-inbox w-4"></i> Messages
+        </a>
+        <a href="{% url 'logout' %}" class="sidebar-link hover:text-red-400 hover:bg-red-500/10">
+          <i class="fas fa-sign-out-alt w-4"></i> Logout
+        </a>
+      </div>
+    </nav>
+  </aside>
+  <!-- Main content -->
+  <main class="flex-1 ml-64 p-6 min-h-screen">
+    <!-- Top bar -->
+    <header class="flex items-center justify-between mb-6">
+      <div>
+        {% block page_header %}<h1 class="page-title">{% block page_title %}Dashboard{% endblock %}</h1>{% endblock %}
+      </div>
+      <div class="flex items-center gap-3">
+        <a href="{% url 'create_post' %}" class="btn-secondary text-sm"><i class="fas fa-plus mr-1"></i> New Post</a>
+      </div>
+    </header>
+    <!-- Messages -->
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{% if message.tags == 'error' %}error{% elif message.tags == 'warning' %}warning{% elif message.tags == 'success' %}success{% else %}info{% endif %} flex items-center gap-2">
+          <i class="fas fa-{% if message.tags == 'error' %}exclamation-circle{% elif message.tags == 'warning' %}exclamation-triangle{% elif message.tags == 'success' %}check-circle{% else %}info-circle{% endif %}"></i>
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+    {% block content %}{% endblock %}
+  </main>
+</div>
+{% else %}
+{% block auth_content %}{% endblock %}
+{% endif %}
+<script>
+// Auto-dismiss alerts
+document.querySelectorAll('.alert').forEach(el => {
+  setTimeout(() => { el.style.transition = 'opacity 0.5s'; el.style.opacity = '0'; setTimeout(() => el.remove(), 500); }, 4000);
+});
+</script>
+{% block extra_scripts %}{% endblock %}
+</body>
+</html>

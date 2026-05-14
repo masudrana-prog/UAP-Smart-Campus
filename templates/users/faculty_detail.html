@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% block title %}{{ member.name }}{% endblock %}
+{% block page_title %}Faculty Profile{% endblock %}
+{% block content %}
+<div class="max-w-3xl">
+  <div class="glass-card overflow-hidden mb-5">
+    <div class="flex gap-0">
+      <!-- Left: Photo -->
+      <div class="w-64 flex-shrink-0 relative">
+        {% if member.photo %}
+          <img src="{{ member.photo.url }}" class="w-full h-full object-cover object-top min-h-72">
+        {% else %}
+          <div class="w-full min-h-72 bg-gradient-to-br from-indigo-900/80 to-purple-900/80 flex items-center justify-center">
+            <div class="w-28 h-28 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white text-5xl font-bold">
+              {{ member.name|first|upper }}
+            </div>
+          </div>
+        {% endif %}
+      </div>
+      <!-- Right: Info -->
+      <div class="flex-1 p-7">
+        <div class="flex items-start justify-between mb-2">
+          <div>
+            <h2 class="text-2xl font-bold text-white">{{ member.name }}</h2>
+            <div class="text-emerald-400 font-semibold mt-0.5">{{ member.designation }}</div>
+          </div>
+          <span class="badge badge-blue">{{ member.get_rank_display }}</span>
+        </div>
+        <div class="text-slate-400 text-sm mb-4 flex items-center gap-2">
+          <i class="fas fa-building text-slate-500"></i> {{ member.department }}
+          {% if member.joined_year %}<span class="text-slate-600">·</span><i class="fas fa-calendar text-slate-500"></i> Since {{ member.joined_year }}{% endif %}
+        </div>
+
+        {% if member.bio %}
+          <p class="text-slate-300 text-sm leading-relaxed mb-4">{{ member.bio }}</p>
+        {% endif %}
+
+        <div class="grid grid-cols-2 gap-3">
+          {% if member.email %}
+          <div class="bg-white/[0.04] rounded-xl p-3">
+            <div class="text-xs text-slate-400 mb-1"><i class="fas fa-envelope mr-1"></i>Email</div>
+            <div class="text-white text-sm">{{ member.email }}</div>
+          </div>
+          {% endif %}
+          {% if member.phone %}
+          <div class="bg-white/[0.04] rounded-xl p-3">
+            <div class="text-xs text-slate-400 mb-1"><i class="fas fa-phone mr-1"></i>Phone</div>
+            <div class="text-white text-sm">{{ member.phone }}</div>
+          </div>
+          {% endif %}
+          {% if member.office_room %}
+          <div class="bg-white/[0.04] rounded-xl p-3">
+            <div class="text-xs text-slate-400 mb-1"><i class="fas fa-door-open mr-1"></i>Office</div>
+            <div class="text-white text-sm">Room {{ member.office_room }}</div>
+          </div>
+          {% endif %}
+          {% if member.research_interest %}
+          <div class="bg-white/[0.04] rounded-xl p-3 col-span-2">
+            <div class="text-xs text-slate-400 mb-1"><i class="fas fa-flask mr-1"></i>Research Interests</div>
+            <div class="text-white text-sm">{{ member.research_interest }}</div>
+          </div>
+          {% endif %}
+        </div>
+
+        <div class="mt-5 flex gap-3">
+          {% if user.is_admin_role %}
+            <a href="{% url 'edit_faculty' member.pk %}" class="btn-primary text-sm">
+              <i class="fas fa-edit mr-2"></i>Edit
+            </a>
+            <form method="post" action="{% url 'delete_faculty' member.pk %}" onsubmit="return confirm('Remove this faculty member?')">
+              {% csrf_token %}
+              <button type="submit" class="btn-danger text-sm"><i class="fas fa-trash mr-2"></i>Remove</button>
+            </form>
+          {% endif %}
+          <a href="{% url 'faculty_list' %}" class="btn-secondary text-sm">← Back to Faculty</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block title %}Edit Faculty{% endblock %}
+{% block page_title %}Edit Faculty Member{% endblock %}
+{% block content %}
+<div class="max-w-2xl">
+  <div class="glass-card p-7">
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="grid grid-cols-2 gap-4 mb-4">
+        <div class="col-span-2"><label class="form-label">Full Name *</label><input type="text" name="name" class="form-input" value="{{ member.name }}" required></div>
+        <div>
+          <label class="form-label">Department *</label>
+          <select name="department" class="form-input" required>
+            {% for val, label in member.RANK_CHOICES %}{% endfor %}
+            <option value="CSE" {% if member.department == 'CSE' %}selected{% endif %}>Computer Science &amp; Engineering</option>
+            <option value="EEE" {% if member.department == 'EEE' %}selected{% endif %}>Electrical &amp; Electronic Engineering</option>
+            <option value="BBA" {% if member.department == 'BBA' %}selected{% endif %}>Business Administration</option>
+            <option value="English" {% if member.department == 'English' %}selected{% endif %}>English</option>
+            <option value="Law" {% if member.department == 'Law' %}selected{% endif %}>Law</option>
+            <option value="Civil" {% if member.department == 'Civil' %}selected{% endif %}>Civil Engineering</option>
+            <option value="Pharmacy" {% if member.department == 'Pharmacy' %}selected{% endif %}>Pharmacy</option>
+          </select>
+        </div>
+        <div><label class="form-label">Designation *</label><input type="text" name="designation" class="form-input" value="{{ member.designation }}" required></div>
+        <div>
+          <label class="form-label">Rank</label>
+          <select name="rank" class="form-input">
+            <option value="lecturer" {% if member.rank == 'lecturer' %}selected{% endif %}>Lecturer</option>
+            <option value="senior_lecturer" {% if member.rank == 'senior_lecturer' %}selected{% endif %}>Senior Lecturer</option>
+            <option value="assistant_professor" {% if member.rank == 'assistant_professor' %}selected{% endif %}>Assistant Professor</option>
+            <option value="associate_professor" {% if member.rank == 'associate_professor' %}selected{% endif %}>Associate Professor</option>
+            <option value="professor" {% if member.rank == 'professor' %}selected{% endif %}>Professor</option>
+            <option value="adjunct" {% if member.rank == 'adjunct' %}selected{% endif %}>Adjunct Faculty</option>
+          </select>
+        </div>
+        <div><label class="form-label">Joined Year</label><input type="number" name="joined_year" class="form-input" value="{{ member.joined_year|default:'' }}"></div>
+      </div>
+      <div class="grid grid-cols-2 gap-4 mb-4">
+        <div><label class="form-label">Email</label><input type="email" name="email" class="form-input" value="{{ member.email }}"></div>
+        <div><label class="form-label">Phone</label><input type="text" name="phone" class="form-input" value="{{ member.phone }}"></div>
+        <div><label class="form-label">Office Room</label><input type="text" name="office_room" class="form-input" value="{{ member.office_room }}"></div>
+        <div><label class="form-label">Display Order</label><input type="number" name="order" class="form-input" value="{{ member.order }}"></div>
+      </div>
+      <div class="mb-4"><label class="form-label">Research Interests</label><input type="text" name="research_interest" class="form-input" value="{{ member.research_interest }}"></div>
+      <div class="mb-4"><label class="form-label">Biography</label><textarea name="bio" class="form-input" rows="4">{{ member.bio }}</textarea></div>
+      <div class="mb-4">
+        <label class="form-label">Photo</label>
+        {% if member.photo %}<div class="mb-2"><img src="{{ member.photo.url }}" class="w-24 h-24 rounded-xl object-cover"></div>{% endif %}
+        <input type="file" name="photo" class="form-input" accept="image/*">
+      </div>
+      <div class="mb-6 flex items-center gap-3">
+        <input type="checkbox" name="is_active" id="is_active" {% if member.is_active %}checked{% endif %} class="w-4 h-4 accent-emerald-400">
+        <label for="is_active" class="text-slate-300 text-sm">Active (visible on faculty page)</label>
+      </div>
+      <div class="flex gap-3">
+        <button type="submit" class="btn-primary"><i class="fas fa-save mr-2"></i>Save Changes</button>
+        <a href="{% url 'faculty_detail' member.pk %}" class="btn-secondary">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
