@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'academic',
     'campus',
     'social',
+    'users',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
