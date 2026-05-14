@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block title %}My Books{% endblock %}
+{% block page_title %}My Borrowed Books{% endblock %}
+{% block content %}
+<div class="space-y-5">
+  <div class="glass-card p-5">
+    <h3 class="font-bold text-white mb-4 flex items-center gap-2"><i class="fas fa-book text-emerald-400"></i> Currently Borrowed ({{ active_issues.count }})</h3>
+    {% for issue in active_issues %}
+    <div class="flex items-center justify-between p-4 bg-white/[0.03] rounded-xl mb-3 border {% if issue.is_overdue %}border-red-500/30{% else %}border-white/5{% endif %}">
+      <div class="flex items-center gap-4">
+        {% if issue.book.cover_image %}
+          <img src="{{ issue.book.cover_image.url }}" class="w-12 h-16 object-cover rounded-lg">
+        {% else %}
+          <div class="w-12 h-16 rounded-lg bg-emerald-900/40 flex items-center justify-center text-emerald-700"><i class="fas fa-book"></i></div>
+        {% endif %}
+        <div>
+          <div class="font-bold text-white">{{ issue.book.title }}</div>
+          <div class="text-xs text-slate-400">{{ issue.book.author }}</div>
+          <div class="text-xs mt-1">
+            <span class="{% if issue.is_overdue %}text-red-400{% elif issue.days_remaining <= 3 %}text-yellow-400{% else %}text-emerald-400{% endif %} font-semibold">
+              {% if issue.is_overdue %}⚠ Overdue!{% else %}{{ issue.days_remaining }} days remaining{% endif %}
+            </span>
+            <span class="text-slate-500 ml-2">· Due {{ issue.return_deadline }}</span>
+          </div>
+        </div>
+      </div>
+      <a href="{% url 'return_book' issue.pk %}" class="btn-secondary text-sm"><i class="fas fa-undo mr-1"></i>Return</a>
+    </div>
+    {% empty %}<p class="text-slate-500 text-sm">No books currently borrowed. <a href="{% url 'book_list' %}" class="text-emerald-400 hover:underline">Browse library →</a></p>{% endfor %}
+  </div>
+  {% if history %}
+  <div class="glass-card p-5">
+    <h3 class="font-bold text-white mb-4 flex items-center gap-2"><i class="fas fa-history text-slate-400"></i> Return History</h3>
+    {% for issue in history %}
+    <div class="flex items-center justify-between p-3 bg-white/[0.03] rounded-lg mb-2 border border-white/5">
+      <div class="text-sm text-white">{{ issue.book.title }}</div>
+      <div class="text-xs text-slate-400">Returned {{ issue.returned_date }}</div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
